@@ -2,8 +2,6 @@
  * utility functions for multiple pages
  *
  * @author  Marcel Suter
- * @since   2022-05-30
- * @version 1.0
  */
 
 /**
@@ -20,6 +18,18 @@ function getQueryParam(key) {
 }
 
 /**
+ * returns the data of the specified form
+ * @param formid  the id of the form element
+ * @return URLSearchParams
+ */
+function getFormData(formid) {
+  const form = document.getElementById(formid);
+  const formData = new FormData(form);
+  const data = new URLSearchParams(formData);
+  return data;
+}
+
+/**
  * shows an information or error message
  * @param text  the message text
  * @param type  the message type (info, warning, error)
@@ -32,20 +42,16 @@ function showMessage(text, type) {
 
 /**
  * shows the navigation
- * @param userRole
  */
-function showNav(userRole) {
+function showNav() {
   const navbar = document.getElementById("nav");
   let text = "<ul>";
-  if (!userRole || userRole === "guest") {
-    text += "<li><a href='./index.html'>Anmelden</a></li>";
-  } else {
-    text += "<li><a href='./bookshelf.html'>Bücher</a></li>" +
-      "<li><a href='./publisherlist.html'>Verlage</a></li>" +
-      "<li><a href='./authorlist.html'>Autoren</a></li>" +
-      "<li><a href='./index.html'>Abmelden</a></li>";
 
-  }
+  text += "<li><a href='./bookshelf.html'>Bücher</a></li>" +
+    "<li><a href='./publisherlist.html'>Verlage</a></li>" +
+    "<li><a href='./authorlist.html'>Autoren</a></li>" +
+    "<li><a href='./index.html'>Abmelden</a></li>";
+
   text += "<li id='message' style='color: red;'></li>" +
     "</ul>";
   navbar.innerHTML = text;
