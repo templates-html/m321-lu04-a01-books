@@ -12,27 +12,25 @@ document.addEventListener("DOMContentLoaded", () => {
  * reads all books
  */
 function readBooks() {
-  // TODO call webservice
-  const books = [
-    {
-      title: "Das Buch",
-      author: "Beate Schreiber",
-      price: 9.99,
-      isbn: "978-3-12-732320-7"
-    },
-    {
-      title: "Papier mit Buchstaben",
-      author: "Jean Jean",
-      price: 2.34,
-      isbn: "978-3-12-732322-6"
-    }, {
-      title: "Auch ein Buch",
-      author: "Hans Tipper",
-      price: 19.99,
-      isbn: "978-3-12-732321-8"
-    }
-  ]
-  showBooklist(books);
+  const url = "http://localhost:5000/booklist";
+
+  fetch(url)
+    .then(function (response) {
+      if (response.ok) {
+        return response;
+      } else if (response.status == 401) {
+        window.location.href = "./";
+      } else {
+        console.log(response);
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      showBooklist(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
 }
 
@@ -44,9 +42,24 @@ function deleteBook(event) {
   const button = event.target;
   const bookUUID = button.getAttribute("data-bookuuid");
 
-  // TODO call webservice
+  const url = "http://localhost:5000/book/" + bookUUID;
 
-  window.location.href = "./bookshelf.html";
+  fetch(url,
+    {
+      method: "DELETE"
+    })
+    .then(function (response) {
+      if (response.ok) {
+        window.location.href = "./bookshelf.html";
+      } else {
+        console.log(response);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+
 
 }
 
@@ -65,7 +78,7 @@ function showBooklist(data) {
 
     button.type = "button";
     button.name = "editBook";
-    button.setAttribute("data-bookuuid", book.bookUUID);
+    button.setAttribute("data-bookuuid", book.book_uuid);
     button.addEventListener("click", editBook);
     row.insertCell(-1).appendChild(button);
 
@@ -84,7 +97,7 @@ function showBooklist(data) {
     button.innerHTML = "&#128465;";
     button.type = "button";
     button.name = "deleteBook";
-    button.setAttribute("data-bookuuid", book.bookUUID);
+    button.setAttribute("data-bookuuid", book.book_uuid);
     button.addEventListener("click", deleteBook);
     row.insertCell(-1).appendChild(button);
 
